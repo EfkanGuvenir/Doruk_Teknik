@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toggle Button</title>
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    #toggleButton {
+      padding: 15px 30px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    #toggleButton.open {
+      background-color: green;
+    }
+
+    #toggleButton.close {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleButton" class="close">Kapat</button>
+
+  <script>
+    var isOpen = false;
+
+    document.getElementById('toggleButton').addEventListener('click', function() {
+      isOpen = !isOpen;
+      var button = document.getElementById('toggleButton');
+
+      if (isOpen) {
+        button.textContent = 'Aç';
+        button.classList.remove('close');
+        button.classList.add('open');
+      } else {
+        button.textContent = 'Kapat';
+        button.classList.remove('open');
+        button.classList.add('close');
+      }
+    });
+  </script>
+</body>
+</html>
