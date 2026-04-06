@@ -1,57 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Toggle Button</title>
-  <style>
-    body {
-      background-color: black;
-      display: flex;
-      height: 100vh;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-    }
-
-    #toggleButton {
-      padding: 15px 30px;
-      font-size: 18px;
-      color: white;
-      cursor: pointer;
-      border: none;
-      outline: none;
-    }
-
-    #toggleButton.open {
-      background-color: green;
-    }
-
-    #toggleButton.close {
-      background-color: red;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url=https://efkanguvenir.github.io/Doruk_Teknik/file/image_model_1.jpg" />
+  <title>Yönlendiriliyor...</title>
+  <script>
+    window.location.href = "https://efkanguvenir.github.io/Doruk_Teknik/file/image_model_1.jpg";
+  </script>
 </head>
 <body>
-  <button id="toggleButton" class="close">Kapat</button>
-
-  <script>
-    var isOpen = false;
-
-    document.getElementById('toggleButton').addEventListener('click', function() {
-      isOpen = !isOpen;
-      var button = document.getElementById('toggleButton');
-
-      if (isOpen) {
-        button.textContent = 'Aç';
-        button.classList.remove('close');
-        button.classList.add('open');
-      } else {
-        button.textContent = 'Kapat';
-        button.classList.remove('open');
-        button.classList.add('close');
-      }
-    });
-  </script>
+  <p>Yönlendiriliyorsunuz... Eğer otomatik yönlendirme çalışmazsa
+    <a href="https://efkanguvenir.github.io/Doruk_Teknik/file/image_model_1.jpg">buraya tıklayın</a>.
+  </p>
 </body>
 </html>
