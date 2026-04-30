@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timestamp Generator</title>
+<title>Random</title>
 
 <style>
     body {
@@ -46,6 +46,21 @@
     .generate { background: #007bff; color: white; }
     .copy { background: #28a745; color: white; }
 
+    button:hover {
+        opacity: 0.9;
+    }
+
+    /* Blink animasyonu */
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.3; }
+        100% { opacity: 1; }
+    }
+
+    .blinking {
+        animation: blink 0.6s infinite;
+    }
+
     #qrcode {
         display: flex;
         justify-content: center;
@@ -68,12 +83,12 @@
 <body>
 
 <div class="container">
-    <h2>Random</h2>
+    <h2>Random/h2>
 
     <div class="box" id="output">---</div>
 
     <button class="generate" onclick="generate()">Yenile</button>
-    <button class="copy" onclick="copyText()">Kopyala</button>
+    <button class="copy" id="copyBtn" onclick="copyText()">Kopyala</button>
 
     <div id="qrcode"></div>
     <svg id="barcode"></svg>
@@ -94,14 +109,13 @@ function generate() {
 
     const gun = String(now.getDate()).padStart(2, '0');
     const ay = String(now.getMonth() + 1).padStart(2, '0');
-    const yil = now.getFullYear();
+    const yil = String(now.getFullYear()).slice(-2);
 
     const saat = String(now.getHours()).padStart(2, '0');
     const dakika = String(now.getMinutes()).padStart(2, '0');
     const saniye = String(now.getSeconds()).padStart(2, '0');
-    const milisaniye = String(now.getMilliseconds()).padStart(3, '0');
-
-    const result = gun + ay + yil + saat + dakika + saniye + milisaniye;
+   
+    const result = gun + ay + yil + saat + dakika + saniye;
 
     document.getElementById("output").innerText = result;
 
@@ -122,9 +136,16 @@ function generate() {
 
 function copyText() {
     const text = document.getElementById("output").innerText;
+    const btn = document.getElementById("copyBtn");
 
     navigator.clipboard.writeText(text).then(() => {
-        alert("Kopyalandı!");
+        // Blink başlat
+        btn.classList.add("blinking");
+
+        // 3 saniye sonra durdur
+        setTimeout(() => {
+            btn.classList.remove("blinking");
+        }, 3000);
     });
 }
 
