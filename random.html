@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Random</title>
+<title>Timestamp Generator</title>
 
 <style>
     body {
         font-family: Arial, sans-serif;
-        background: #f4f6f8;
+        background: #1e1e1e;
+        color: #eee;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -17,16 +18,16 @@
     }
 
     .container {
-        background: white;
+        background: #2b2b2b;
         padding: 30px;
         border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         text-align: center;
         width: 400px;
     }
 
     .box {
-        background: #eef2f7;
+        background: #3a3a3a;
         padding: 15px;
         border-radius: 8px;
         margin-bottom: 20px;
@@ -43,14 +44,12 @@
         cursor: pointer;
     }
 
-    .generate { background: #007bff; color: white; }
     .copy { background: #28a745; color: white; }
 
     button:hover {
         opacity: 0.9;
     }
 
-    /* Blink animasyonu */
     @keyframes blink {
         0% { opacity: 1; }
         50% { opacity: 0.3; }
@@ -75,7 +74,7 @@
     .footer {
         margin-top: 20px;
         font-size: 12px;
-        color: #888;
+        color: #aaa;
     }
 </style>
 </head>
@@ -87,7 +86,6 @@
 
     <div class="box" id="output">---</div>
 
-    <button class="generate" onclick="generate()">Yenile</button>
     <button class="copy" id="copyBtn" onclick="copyText()">Kopyala</button>
 
     <div id="qrcode"></div>
@@ -96,9 +94,7 @@
     <div class="footer">Developer: Doruk Teknik</div>
 </div>
 
-<!-- QR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- Barcode -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 
 <script>
@@ -119,7 +115,6 @@ function generate() {
 
     document.getElementById("output").innerText = result;
 
-    // QR reset
     document.getElementById("qrcode").innerHTML = "";
     qr = new QRCode(document.getElementById("qrcode"), {
         text: result,
@@ -127,7 +122,6 @@ function generate() {
         height: 150
     });
 
-    // Barcode
     JsBarcode("#barcode", result, {
         format: "CODE128",
         displayValue: false
@@ -139,17 +133,17 @@ function copyText() {
     const btn = document.getElementById("copyBtn");
 
     navigator.clipboard.writeText(text).then(() => {
-        // Blink başlat
         btn.classList.add("blinking");
-
-        // 3 saniye sonra durdur
         setTimeout(() => {
             btn.classList.remove("blinking");
         }, 3000);
     });
 }
 
-window.onload = generate;
+window.onload = () => {
+    generate();
+    setInterval(generate, 10000);
+};
 </script>
 
 </body>
