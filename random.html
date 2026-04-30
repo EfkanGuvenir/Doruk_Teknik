@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timestamp Generator</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 400px;
+    }
+
+    .box {
+        background: #eef2f7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        word-break: break-all;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    button {
+        padding: 10px 15px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .generate { background: #007bff; color: white; }
+    .copy { background: #28a745; color: white; }
+
+    #qrcode {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    svg {
+        display: block;
+        margin: 15px auto;
+    }
+
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #888;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Random</h2>
+
+    <div class="box" id="output">---</div>
+
+    <button class="generate" onclick="generate()">Yenile</button>
+    <button class="copy" onclick="copyText()">Kopyala</button>
+
+    <div id="qrcode"></div>
+    <svg id="barcode"></svg>
+
+    <div class="footer">Developer: Doruk Teknik</div>
+</div>
+
+<!-- QR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Barcode -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+<script>
+let qr;
+
+function generate() {
+    const now = new Date();
+
+    const gun = String(now.getDate()).padStart(2, '0');
+    const ay = String(now.getMonth() + 1).padStart(2, '0');
+    const yil = now.getFullYear();
+
+    const saat = String(now.getHours()).padStart(2, '0');
+    const dakika = String(now.getMinutes()).padStart(2, '0');
+    const saniye = String(now.getSeconds()).padStart(2, '0');
+    const milisaniye = String(now.getMilliseconds()).padStart(3, '0');
+
+    const result = gun + ay + yil + saat + dakika + saniye + milisaniye;
+
+    document.getElementById("output").innerText = result;
+
+    // QR reset
+    document.getElementById("qrcode").innerHTML = "";
+    qr = new QRCode(document.getElementById("qrcode"), {
+        text: result,
+        width: 150,
+        height: 150
+    });
+
+    // Barcode
+    JsBarcode("#barcode", result, {
+        format: "CODE128",
+        displayValue: false
+    });
+}
+
+function copyText() {
+    const text = document.getElementById("output").innerText;
+
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Kopyalandı!");
+    });
+}
+
+window.onload = generate;
+</script>
+
+</body>
+</html>
