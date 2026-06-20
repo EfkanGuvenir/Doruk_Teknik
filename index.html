@@ -1,165 +1,308 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cap Analyzer Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kondansatör Sağlık Analizörü | Doruk Teknik</title>
+    <style>
+        /* Genel Koyu Tema Ayarları */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<style>
-body{
-    font-family: Arial;
-    background:#0f172a;
-    color:#e2e8f0;
-    margin:0;
-    padding:20px;
-}
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-.card{
-    max-width:500px;
-    margin:auto;
-    background:#111827;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 0 20px rgba(0,0,0,.4);
-}
+        .container {
+            background-color: #1e1e1e;
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2d2d2d;
+        }
 
-h2{
-    text-align:center;
-    color:#38bdf8;
-}
+        .brand {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00adb5;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-label{
-    font-size:14px;
-    color:#94a3b8;
-}
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            color: #ffffff;
+            border-bottom: 2px solid #2d2d2d;
+            padding-bottom: 10px;
+        }
 
-input{
-    width:100%;
-    padding:10px;
-    margin:6px 0 14px 0;
-    border-radius:8px;
-    border:1px solid #334155;
-    background:#0b1220;
-    color:white;
-}
+        /* Giriş Elemanları */
+        .input-group {
+            margin-bottom: 25px;
+        }
 
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:#38bdf8;
-    font-weight:bold;
-    cursor:pointer;
-}
+        label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #b3b3b3;
+        }
 
-.result{
-    margin-top:15px;
-    padding:15px;
-    text-align:center;
-    font-size:18px;
-    border-radius:10px;
-}
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.good{background:#14532d;}
-.mid{background:#78350f;}
-.bad{background:#7f1d1d;}
-.warn{background:#1e3a8a;}
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #333;
+            outline: none;
+            cursor: pointer;
+        }
 
-.small{
-    font-size:12px;
-    color:#94a3b8;
-    margin-top:10px;
-    text-align:center;
-}
-</style>
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00adb5;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .angle-display {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffffff;
+            min-width: 75px;
+            text-align: right;
+        }
+
+        /* Çıktı ve Hesaplama Alanları */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2d2d2d;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Durum Kartı */
+        .status-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            border: 1px solid transparent;
+        }
+
+        /* Dinamik Sağlık Renkleri */
+        .status-excellent {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .status-good {
+            background-color: rgba(0, 188, 212, 0.15);
+            color: #00bcd4;
+            border-color: #00bcd4;
+        }
+
+        .status-marginal {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            border-color: #ff9800;
+        }
+
+        .status-bad {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+            border-color: #f44336;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Referans Tablosu Mini */
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 15px;
+        }
+
+        .reference-table th, .reference-table td {
+            padding: 6px 10px;
+            text-align: left;
+            border-bottom: 1px solid #2d2d2d;
+        }
+
+        .reference-table th {
+            color: #aaa;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="card">
+<div class="container">
+    <div class="brand">Doruk Teknik</div>
+    <h1>Kondansatör Sağlık Analizörü</h1>
 
-<h2>Cap Analyzer Pro</h2>
+    <div class="input-group">
+        <label for="thetaRange">Teta (θ) Faz Açısını Ayarlayın:</label>
+        <div class="slider-container">
+            <input type="range" id="thetaRange" min="-90" max="0" value="-88">
+            <div class="angle-display" id="thetaVal">-88°</div>
+        </div>
+    </div>
 
-<label>Kapasite (µF)</label>
-<input id="uf" type="number">
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Kayıp Açısı (δ)</div>
+            <div class="metric-value" id="deltaVal">2°</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Kayıp Faktörü (DF)</div>
+            <div class="metric-value" id="dfVal">0.0349</div>
+        </div>
+    </div>
 
-<label>Voltaj (V)</label>
-<input id="volt" type="number">
+    <div id="statusBox" class="status-card status-excellent">
+        MÜKEMMEL
+    </div>
 
-<label>Theta (°)</label>
-<input id="theta" type="number">
-
-<label>Tanδ</label>
-<input id="tan" type="number" step="0.01">
-
-<label>ESR (Ω)</label>
-<input id="esr" type="number" step="0.01">
-
-<button onclick="calc()">Analiz Et</button>
-
-<div id="result" class="result warn">Bekleniyor...</div>
-
-<div class="small">
-Offline analiz • Kart tamiri için referans sistem
-</div>
-
+    <table class="reference-table">
+        <thead>
+            <tr>
+                <th>Teta (θ) Aralığı</th>
+                <th>Durum Değerlendirmesi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="color: #4caf50;">-90° ile -85° arası</td>
+                <td>Mükemmel (Minimum ESR, Sağlıklı Filtreleme)</td>
+            </tr>
+            <tr>
+                <td style="color: #00bcd4;">-84° ile -75° arası</td>
+                <td>İyi / Kabul Edilebilir (Standart Çalışma)</td>
+            </tr>
+            <tr>
+                <td style="color: #ff9800;">-74° ile -60° arası</td>
+                <td>Kritik / Zayıf (Yüksek Akımda Riskli, Isınma Yapar)</td>
+            </tr>
+            <tr>
+                <td style="color: #f44336;">-60°'den büyük (0°'ye yakın)</td>
+                <td>Bozuk / Acilen Değiştirilmeli (Kapasitif Özellik Kayıp)</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <script>
+    const slider = document.getElementById('thetaRange');
+    const thetaDisplay = document.getElementById('thetaVal');
+    const deltaDisplay = document.getElementById('deltaVal');
+    const dfDisplay = document.getElementById('dfVal');
+    const statusBox = document.getElementById('statusBox');
 
-function calc(){
+    function updateCalculations() {
+        const theta = parseInt(slider.value);
+        
+        // Ekran Gösterimi
+        thetaDisplay.innerText = theta + '°';
+        
+        // Kayıp Açısı Hesaplama: delta = 90 - abs(theta)
+        const delta = 90 - Math.abs(theta);
+        deltaDisplay.innerText = delta + '°';
+        
+        // Kayıp Faktörü (DF) Hesaplama: tan(delta)
+        // Dereceyi radyana çeviriyoruz: radyan = derece * (PI / 180)
+        let df;
+        if (theta === 0) {
+            df = "∞ (Saf Direnç)";
+        } else {
+            df = Math.tan(delta * Math.PI / 180).toFixed(4);
+        }
+        dfDisplay.innerText = df;
 
-let uf = parseFloat(document.getElementById("uf").value);
-let v = parseFloat(document.getElementById("volt").value);
-let theta = parseFloat(document.getElementById("theta").value);
-let tan = parseFloat(document.getElementById("tan").value);
-let esr = parseFloat(document.getElementById("esr").value);
+        // Sağlık Durumu Sınıflandırma ve Stil Yönetimi
+        statusBox.className = "status-card"; // Sınıfları sıfırla
+        
+        if (theta <= -85 && theta >= -90) {
+            statusBox.innerText = "MÜKEMMEL (SAĞLIKLI)";
+            statusBox.classList.add("status-excellent");
+        } else if (theta <= -75 && theta >= -84) {
+            statusBox.innerText = "İYİ / KABUL EDİLEBİLİR";
+            statusBox.classList.add("status-good");
+        } else if (theta <= -60 && theta >= -74) {
+            statusBox.innerText = "KRİTİK / ZAYIF (TAKİP EDİLMELİ)";
+            statusBox.classList.add("status-marginal");
+        } else {
+            statusBox.innerText = "BOZUK / DEĞİŞTİRİLMELİ!";
+            statusBox.classList.add("status-bad");
+        }
+    }
 
-let score = 0;
-
-// Theta puanı
-if(theta <= -87) score += 40;
-else if(theta <= -83) score += 30;
-else if(theta <= -78) score += 15;
-else if(theta <= -70) score += 5;
-
-// Tanδ
-if(tan <= 0.1) score += 30;
-else if(tan <= 0.25) score += 20;
-else if(tan <= 0.5) score += 10;
-
-// ESR (basit genel)
-if(esr <= 0.2) score += 30;
-else if(esr <= 0.5) score += 20;
-else if(esr <= 1) score += 10;
-
-let res = "";
-let cls = "";
-
-if(score >= 80){
-    res = "✅ SAĞLAM";
-    cls = "good";
-}
-else if(score >= 55){
-    res = "🟡 ORTA";
-    cls = "mid";
-}
-else if(score >= 30){
-    res = "⚠️ ŞÜPHELİ";
-    cls = "warn";
-}
-else{
-    res = "❌ DEĞİŞTİR";
-    cls = "bad";
-}
-
-document.getElementById("result").className = "result " + cls;
-document.getElementById("result").innerHTML =
-res + "<br><small>Puan: " + score + "</small>";
-
-}
-
+    // Slider hareket ettikçe ve bırakıldığında tetikle
+    slider.addEventListener('input', updateCalculations);
+    
+    // İlk açılışta hesaplamayı çalıştır
+    updateCalculations();
 </script>
 
 </body>
