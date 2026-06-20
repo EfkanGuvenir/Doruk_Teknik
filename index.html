@@ -3,113 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kondansatör Analiz</title>
+<title>Cap Analyzer Pro</title>
 
 <style>
 body{
     font-family: Arial;
-    max-width: 500px;
-    margin: 30px auto;
+    background:#0f172a;
+    color:#e2e8f0;
+    margin:0;
     padding:20px;
-    background:#f4f4f4;
 }
 
-.container{
-    background:white;
+.card{
+    max-width:500px;
+    margin:auto;
+    background:#111827;
     padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+h2{
+    text-align:center;
+    color:#38bdf8;
+}
+
+label{
+    font-size:14px;
+    color:#94a3b8;
 }
 
 input{
     width:100%;
     padding:10px;
-    margin-top:5px;
-    margin-bottom:15px;
-    box-sizing:border-box;
+    margin:6px 0 14px 0;
+    border-radius:8px;
+    border:1px solid #334155;
+    background:#0b1220;
+    color:white;
 }
 
 button{
     width:100%;
     padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    font-weight:bold;
     cursor:pointer;
 }
 
 .result{
-    margin-top:20px;
+    margin-top:15px;
     padding:15px;
-    font-size:20px;
     text-align:center;
-    font-weight:bold;
+    font-size:18px;
+    border-radius:10px;
+}
+
+.good{background:#14532d;}
+.mid{background:#78350f;}
+.bad{background:#7f1d1d;}
+.warn{background:#1e3a8a;}
+
+.small{
+    font-size:12px;
+    color:#94a3b8;
+    margin-top:10px;
+    text-align:center;
 }
 </style>
-
 </head>
+
 <body>
 
-<div class="container">
+<div class="card">
 
-<h2>Elektrolitik Kondansatör Testi</h2>
+<h2>Cap Analyzer Pro</h2>
 
 <label>Kapasite (µF)</label>
-<input type="number" id="uf">
+<input id="uf" type="number">
 
 <label>Voltaj (V)</label>
-<input type="number" id="volt">
+<input id="volt" type="number">
 
-<label>Theta Açısı (°)</label>
-<input type="number" id="theta">
+<label>Theta (°)</label>
+<input id="theta" type="number">
 
 <label>Tanδ</label>
-<input type="number" step="0.01" id="tandelta">
+<input id="tan" type="number" step="0.01">
 
-<button onclick="hesapla()">Analiz Et</button>
+<label>ESR (Ω)</label>
+<input id="esr" type="number" step="0.01">
 
-<div class="result" id="sonuc"></div>
+<button onclick="calc()">Analiz Et</button>
+
+<div id="result" class="result warn">Bekleniyor...</div>
+
+<div class="small">
+Offline analiz • Kart tamiri için referans sistem
+</div>
 
 </div>
 
 <script>
 
-function hesapla(){
+function calc(){
 
 let uf = parseFloat(document.getElementById("uf").value);
+let v = parseFloat(document.getElementById("volt").value);
 let theta = parseFloat(document.getElementById("theta").value);
-let tan = parseFloat(document.getElementById("tandelta").value);
+let tan = parseFloat(document.getElementById("tan").value);
+let esr = parseFloat(document.getElementById("esr").value);
 
-let durum = "";
+let score = 0;
 
-if(uf >= 100){
+// Theta puanı
+if(theta <= -87) score += 40;
+else if(theta <= -83) score += 30;
+else if(theta <= -78) score += 15;
+else if(theta <= -70) score += 5;
 
-    if(theta <= -85 && tan < 0.15)
-        durum = "✅ SAĞLAM";
+// Tanδ
+if(tan <= 0.1) score += 30;
+else if(tan <= 0.25) score += 20;
+else if(tan <= 0.5) score += 10;
 
-    else if(theta <= -78 && tan < 0.30)
-        durum = "🟡 ORTA";
+// ESR (basit genel)
+if(esr <= 0.2) score += 30;
+else if(esr <= 0.5) score += 20;
+else if(esr <= 1) score += 10;
 
-    else if(theta <= -65 && tan < 0.60)
-        durum = "⚠️ ŞÜPHELİ";
+let res = "";
+let cls = "";
 
-    else
-        durum = "❌ DEĞİŞTİR";
+if(score >= 80){
+    res = "✅ SAĞLAM";
+    cls = "good";
 }
-
+else if(score >= 55){
+    res = "🟡 ORTA";
+    cls = "mid";
+}
+else if(score >= 30){
+    res = "⚠️ ŞÜPHELİ";
+    cls = "warn";
+}
 else{
-
-    if(theta <= -80 && tan < 0.25)
-        durum = "✅ SAĞLAM";
-
-    else if(theta <= -70 && tan < 0.45)
-        durum = "🟡 ORTA";
-
-    else if(theta <= -55 && tan < 0.80)
-        durum = "⚠️ ŞÜPHELİ";
-
-    else
-        durum = "❌ DEĞİŞTİR";
+    res = "❌ DEĞİŞTİR";
+    cls = "bad";
 }
 
-document.getElementById("sonuc").innerHTML = durum;
+document.getElementById("result").className = "result " + cls;
+document.getElementById("result").innerHTML =
+res + "<br><small>Puan: " + score + "</small>";
 
 }
 
